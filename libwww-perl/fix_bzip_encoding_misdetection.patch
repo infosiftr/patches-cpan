@@ -1,0 +1,20 @@
+--- lib/HTTP/Message.pm	2010-11-27 03:08:24.000000000 -0700
++++ lib/HTTP/Message.pm	2010-11-27 03:08:54.000000000 -0700
+@@ -307,7 +307,7 @@
+ 		    $content_ref = \$output;
+ 		    $content_ref_iscopy++;
+ 		}
+-		elsif ($ce eq "x-bzip2") {
++		elsif ($ce eq "bzip2" || $ce eq "x-bzip2") {
+ 		    require IO::Uncompress::Bunzip2;
+ 		    my $output;
+ 		    IO::Uncompress::Bunzip2::bunzip2($content_ref, \$output, Transparent => 0)
+@@ -483,7 +483,7 @@
+ 		or die "Can't deflate content: $IO::Compress::Deflate::DeflateError";
+ 	    $content = $output;
+ 	}
+-	elsif ($encoding eq "x-bzip2") {
++	elsif ($encoding eq "bzip2" || $encoding eq "x-bzip2") {
+ 	    require IO::Compress::Bzip2;
+ 	    my $output;
+ 	    IO::Compress::Bzip2::bzip2(\$content, \$output)

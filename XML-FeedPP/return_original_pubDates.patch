@@ -1,0 +1,74 @@
+--- lib/XML/FeedPP.pm	2009-11-20 19:13:06.000000000 -0700
++++ lib/XML/FeedPP.pm	2010-07-20 05:25:19.000000000 -0600
+@@ -1000,7 +1000,7 @@
+ sub pubDate {
+     my $self = shift;
+     my $date = shift;
+-    return $self->get_pubDate_w3cdtf() unless defined $date;
++    return $self->get_pubDate_native() unless defined $date;
+     $date = XML::FeedPP::Util::get_rfc1123($date);
+     $self->{rss}->{channel}->set_value( "pubDate", $date );
+ }
+@@ -1081,7 +1081,7 @@
+ sub pubDate {
+     my $self = shift;
+     my $date = shift;
+-    return $self->get_pubDate_w3cdtf() unless defined $date;
++    return $self->get_pubDate_native() unless defined $date;
+     $date = XML::FeedPP::Util::get_rfc1123($date);
+     $self->set_value( "pubDate", $date );
+ }
+@@ -1342,7 +1342,7 @@
+ sub pubDate {
+     my $self = shift;
+     my $date = shift;
+-    return $self->get_pubDate_w3cdtf() unless defined $date;
++    return $self->get_pubDate_native() unless defined $date;
+     $date = XML::FeedPP::Util::get_w3cdtf($date);
+     $self->{'rdf:RDF'}->{channel}->set_value( "dc:date", $date );
+ }
+@@ -1411,7 +1411,7 @@
+ sub pubDate {
+     my $self = shift;
+     my $date = shift;
+-    return $self->get_pubDate_w3cdtf() unless defined $date;
++    return $self->get_pubDate_native() unless defined $date;
+     $date = XML::FeedPP::Util::get_w3cdtf($date);
+     $self->set_value( "dc:date", $date );
+ }
+@@ -1666,7 +1666,7 @@
+ sub pubDate {
+     my $self = shift;
+     my $date = shift;
+-    return $self->get_pubDate_w3cdtf() unless defined $date;
++    return $self->get_pubDate_native() unless defined $date;
+     $date = XML::FeedPP::Util::get_w3cdtf($date);
+     $self->{feed}->set_value( 'modified', $date );
+ }
+@@ -1786,7 +1786,7 @@
+ sub pubDate {
+     my $self = shift;
+     my $date = shift;
+-    return $self->get_pubDate_w3cdtf() unless defined $date;
++    return $self->get_pubDate_native() unless defined $date;
+     $date = XML::FeedPP::Util::get_w3cdtf($date);
+     $self->{feed}->set_value( 'updated', $date );
+ }
+@@ -1938,7 +1938,7 @@
+ sub pubDate {
+     my $self = shift;
+     my $date = shift;
+-    return $self->get_pubDate_w3cdtf() unless defined $date;
++    return $self->get_pubDate_native() unless defined $date;
+     $date = XML::FeedPP::Util::get_w3cdtf($date);
+     $self->set_value( 'issued',   $date );
+     $self->set_value( 'modified', $date );
+@@ -2020,7 +2020,7 @@
+ sub pubDate {
+     my $self = shift;
+     my $date = shift;
+-    return $self->get_pubDate_w3cdtf() unless defined $date;
++    return $self->get_pubDate_native() unless defined $date;
+     $date = XML::FeedPP::Util::get_w3cdtf($date);
+     $self->set_value( 'updated', $date );
+ }

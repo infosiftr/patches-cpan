@@ -1,0 +1,76 @@
+diff --git lib/XML/TreePP.pm lib/XML/TreePP.pm
+index 04f8595..04423d9 100755
+--- lib/XML/TreePP.pm
++++ lib/XML/TreePP.pm
+@@ -2,6 +2,8 @@
+ 
+ XML::TreePP -- Pure Perl implementation for parsing/writing XML documents
+ 
++With all-new improvements by Andrew!
++
+ =head1 SYNOPSIS
+ 
+ parse an XML document from file into hash tree:
+@@ -723,6 +725,13 @@ sub parse {
+         $self->{__force_hash} = { map { $_ => 1 } @$force };
+         $self->{__force_hash_all} = $self->{__force_hash}->{'*'};
+     }
++	
++	local $self->{__force_textmode} = {};
++	if ( exists $self->{force_textmode} ) {
++		my $force = $self->{force_textmode};
++		$force = [$force] unless ref $force;
++		$self->{__force_textmode} = { map { $_ => 1 } @$force };
++	}
+ 
+     my $tnk = $self->{text_node_key} if exists $self->{text_node_key};
+     $tnk = $TEXT_NODE_KEY unless defined $tnk;
+@@ -772,6 +781,8 @@ sub xml_to_flat {
+             $deref = \&xml_deref_octet;
+         }
+     }
++	
++	my $force_textmode_enabled_depth = 0;
+ 
+     while ( $$textref =~ m{
+         ([^<]*) <
+@@ -787,13 +798,14 @@ sub xml_to_flat {
+             ([^\!\?\s<>](?:"[^"]*"|'[^']*'|[^"'<>])*)
+         ))
+         > ([^<]*)
+-    }sxg ) {
++    }sxgp ) {
+         my (
+             $ahead,     $match,    $typePI,   $contPI,   $typeCDATA,
+             $contCDATA, $typeDocT, $contDocT, $typeCmnt, $contCmnt,
+             $typeElem,  $contElem, $follow
+           )
+           = ( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13 );
++		my $fullText = ${^MATCH}; # this feature (coupled with the /p flag to the regex) was added in 5.10.0 so that we only incur the performance penalty for the regexes we specifically request it on instead of on the ENTIRE APPLICATION
+         if ( defined $ahead && $ahead =~ /\S/ ) {
+             $ahead =~ s/([^\040-\076])/sprintf("\\x%02X",ord($1))/eg;
+             $self->warn( "Invalid string: [$ahead] before <$match>" );
+@@ -826,7 +838,22 @@ sub xml_to_flat {
+                 }
+                 $node->{attributes} = $attr if ref $attr;
+             }
+-            push( @$flat, $node );
++			if (exists $self->{__force_textmode}->{$node->{tagName}}) {
++				if ($node->{endTag}) {
++					--$force_textmode_enabled_depth;
++				}
++			}
++			if ($force_textmode_enabled_depth) {
++				$follow = $fullText;
++			}
++			else {
++				push( @$flat, $node );
++			}
++			if (exists $self->{__force_textmode}->{$node->{tagName}}) {
++				if ($node->{startTag}) {
++					++$force_textmode_enabled_depth;
++				}
++			}
+         }
+         elsif ($typeCDATA) {    ## CDATASection
+             if ( exists $self->{cdata_scalar_ref} && $self->{cdata_scalar_ref} ) {

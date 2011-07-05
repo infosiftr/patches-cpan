@@ -1,0 +1,20 @@
+diff --git lib/XML/FeedPP.pm lib/XML/FeedPP.pm
+index d1f8727..f8551b2 100644
+--- lib/XML/FeedPP.pm
++++ lib/XML/FeedPP.pm
+@@ -2225,15 +2225,6 @@ sub get_value {
+         }
+     }
+ 
+-    # a hack for atom: <content type="xhtml"><div>...</div></content>
+-    if ( UNIVERSAL::isa( $value, 'HASH' )
+-        && exists $value->{'-type'}
+-        && ($value->{'-type'} eq "xhtml")) {
+-        my $child = [ grep { /^[^_-_#]/ } keys %$value ];
+-        if (scalar @$child == 1) {
+-            return &get_value( $value, $child->[0] );
+-        }
+-    }
+     return &get_avalue($value);
+ }
+ 

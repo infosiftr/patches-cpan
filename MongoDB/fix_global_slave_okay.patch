@@ -1,0 +1,13 @@
+diff --git lib/MongoDB/Cursor.pm lib/MongoDB/Cursor.pm
+index f1294fb..11690fc 100644
+--- lib/MongoDB/Cursor.pm
++++ lib/MongoDB/Cursor.pm
+@@ -223,7 +223,7 @@ sub _do_query {
+         return;
+     }
+ 
+-    my $opts = $MongoDB::Cursor::slave_okay | ($self->tailable << 1) | 
++    my $opts = ($MongoDB::Cursor::slave_okay << 2) | ($self->tailable << 1) | 
+         ($self->slave_okay << 2) | ($self->immortal << 4);
+ 
+     my ($query, $info) = MongoDB::write_query($self->_ns, $opts, $self->_skip, $self->_limit, $self->_query, $self->_fields);
